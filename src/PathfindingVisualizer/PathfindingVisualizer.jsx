@@ -5,11 +5,12 @@ import { dijkstra, getNodesInShortestPathOrder } from "../Algorithms/dijkstra";
 import { Navbar, Nav, Container, Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { depthFirstSearch } from "../Algorithms/depth-first-search";
+import { simpleStairPattern } from "../MazeAlgo/simpleStairPattern";
 
 const START_NODE_ROW = 12;
-const START_NODE_COL = 15;
+const START_NODE_COL = 17;
 const FINISH_NODE_ROW = 12;
-const FINISH_NODE_COL = 60;
+const FINISH_NODE_COL = 58;
 
 export default class PathfindingVisualizer extends Component {
   constructor(props) {
@@ -83,6 +84,16 @@ export default class PathfindingVisualizer extends Component {
     }
   }
 
+  animateMaze(visitedWallsInOrder) {
+    for (let i = 0; i < visitedWallsInOrder.length; i++) {
+      setTimeout(() => {
+        const node = visitedWallsInOrder[i];
+        this.handleMouseDown(node.row, node.col);
+        this.handleMouseUp();
+      }, 30 * i);
+    }
+  }
+
   visualizeDijkstra() {
     const { grid } = this.state;
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
@@ -106,6 +117,14 @@ export default class PathfindingVisualizer extends Component {
     this.animateDFS(visitedNodesInOrder);
   }
 
+  visualizeStairMaze() {
+    const { grid } = this.state;
+    const startNode = grid[START_NODE_ROW][START_NODE_COL];
+    const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+    const visitedWallsInOrder = simpleStairPattern(grid, startNode, finishNode);
+    this.animateMaze(visitedWallsInOrder);
+  }
+
   render() {
     const { grid, mouseIsPressed } = this.state;
 
@@ -117,21 +136,22 @@ export default class PathfindingVisualizer extends Component {
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="me-auto">
-                <Button
-                  onClick={() => this.visualizeDijkstra()}
-                  variant="outline-dark"
-                >
+                <Button onClick={() => this.visualizeDijkstra()} variant="dark">
                   Visualize Dijkstra
                 </Button>
                 &nbsp;
-                <Button
-                  variant="outline-dark"
-                  onClick={() => this.visualizeDFS()}
-                >
+                <Button variant="dark" onClick={() => this.visualizeDFS()}>
                   Visualize DFS
                 </Button>
                 &nbsp;
-                <Button variant="outline-dark">Visualize A*</Button>
+                <Button variant="dark">Visualize A*</Button>
+                &nbsp; &nbsp;
+                <Button
+                  variant="outline-dark"
+                  onClick={() => this.visualizeStairMaze()}
+                >
+                  Generate Maze
+                </Button>
               </Nav>
             </Navbar.Collapse>
           </Container>
