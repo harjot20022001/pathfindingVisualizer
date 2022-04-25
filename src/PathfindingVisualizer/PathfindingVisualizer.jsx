@@ -2,10 +2,11 @@ import React, { Component } from "react";
 import Node from "../Node/Node";
 import "./PathfindingVisualizer.css";
 import { dijkstra, getNodesInShortestPathOrder } from "../Algorithms/dijkstra";
-import { Navbar, Nav, Container, Button } from "react-bootstrap";
+import { Navbar, Nav, Container, Button, Dropdown } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { depthFirstSearch } from "../Algorithms/depth-first-search";
 import { simpleStairPattern } from "../MazeAlgo/simpleStairPattern";
+import { simpleMaze } from "../MazeAlgo/simpleMaze";
 
 const START_NODE_ROW = 12;
 const START_NODE_COL = 17;
@@ -94,6 +95,14 @@ export default class PathfindingVisualizer extends Component {
     }
   }
 
+  animateSimpleMaze(walls) {
+    for (let i = 0; i < walls.length; i++) {
+      const node = walls[i];
+      this.handleMouseDown(node.row, node.col);
+      this.handleMouseUp();
+    }
+  }
+
   visualizeDijkstra() {
     const { grid } = this.state;
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
@@ -125,14 +134,28 @@ export default class PathfindingVisualizer extends Component {
     this.animateMaze(visitedWallsInOrder);
   }
 
+  visualizeSimpleMaze() {
+    const { grid } = this.state;
+    const startNode = grid[START_NODE_ROW][START_NODE_COL];
+    const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+    const walls = simpleMaze(grid, startNode, finishNode);
+    this.animateSimpleMaze(walls);
+  }
+
   render() {
     const { grid, mouseIsPressed } = this.state;
-
     return (
       <div>
         <Navbar bg="light" expand="lg">
           <Container>
-            <Navbar.Brand href="#home">Pathfinding Visualizer</Navbar.Brand>
+            <Navbar.Brand
+              onClick={() => {
+                window.location.reload(false);
+              }}
+              href="#home"
+            >
+              Pathfinding Visualizer
+            </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="me-auto">
@@ -146,12 +169,29 @@ export default class PathfindingVisualizer extends Component {
                 &nbsp;
                 <Button variant="dark">Visualize A*</Button>
                 &nbsp; &nbsp;
-                <Button
-                  variant="outline-dark"
-                  onClick={() => this.visualizeStairMaze()}
-                >
-                  Generate Maze
-                </Button>
+                <Dropdown>
+                  <Dropdown.Toggle
+                    id="dropdown-button-dark"
+                    variant="outline-dark"
+                  >
+                    Generate Maze
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu variant="dark">
+                    <Dropdown.Item
+                      onClick={() => this.visualizeSimpleMaze()}
+                      href="#/action-1"
+                    >
+                      Simple Maze
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => this.visualizeStairMaze()}
+                      href="#/action-2"
+                    >
+                      Stair Pattern
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
               </Nav>
             </Navbar.Collapse>
           </Container>
