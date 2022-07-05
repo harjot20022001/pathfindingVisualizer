@@ -1,3 +1,18 @@
 .grid {
   margin: 75px 0 0;
 }
+
+.grid-disabled {
+  margin: 75px 0 0;
+  pointer-events: none;
+}
+
+.nav-disabled {
+  pointer-events: none;
+}
+
+.reset-button {
+  position: absolute;
+  right: 789px;
+  top: 9px;
+}

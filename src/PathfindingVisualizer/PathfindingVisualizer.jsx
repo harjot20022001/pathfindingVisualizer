@@ -19,6 +19,7 @@ export default class PathfindingVisualizer extends Component {
     this.state = {
       grid: [],
       mouseIsPressed: false,
+      isVisualize: false,
     };
   }
 
@@ -109,6 +110,7 @@ export default class PathfindingVisualizer extends Component {
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
     const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
     const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
+    this.setState({ isVisualize: true });
     this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 
@@ -123,6 +125,7 @@ export default class PathfindingVisualizer extends Component {
       finishNode,
       nodes
     );
+    this.setState({ isVisualize: true });
     this.animateDFS(visitedNodesInOrder);
   }
 
@@ -138,15 +141,17 @@ export default class PathfindingVisualizer extends Component {
     const { grid } = this.state;
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
-    const walls = simpleMaze(grid, startNode, finishNode);
+    const rows = 29;
+    const cols = 76;
+    const walls = simpleMaze(grid, startNode, finishNode, rows, cols);
     this.animateSimpleMaze(walls);
   }
 
   render() {
-    const { grid, mouseIsPressed } = this.state;
+    const { grid, mouseIsPressed, isVisualize } = this.state;
     return (
       <div>
-        <Navbar bg="light" expand="lg">
+        <Navbar className={navClass(isVisualize)} bg="light" expand="lg">
           <Container>
             <Navbar.Brand
               onClick={() => {
@@ -196,7 +201,16 @@ export default class PathfindingVisualizer extends Component {
             </Navbar.Collapse>
           </Container>
         </Navbar>
-        <div className="grid">
+        <Button
+          className="reset-button"
+          onClick={() => {
+            window.location.reload(false);
+          }}
+          variant="outline-danger"
+        >
+          Reset
+        </Button>
+        <div className={extraClassName(isVisualize)}>
           {grid.map((row, rowIdx) => {
             return (
               <div key={rowIdx}>
@@ -227,6 +241,19 @@ export default class PathfindingVisualizer extends Component {
     );
   }
 }
+
+const navClass = (isVisualize) => {
+  if (isVisualize === true) {
+    return "nav-disabled";
+  }
+};
+
+const extraClassName = (isVisualize) => {
+  if (isVisualize === true) {
+    return "grid-disabled";
+  }
+  return "grid";
+};
 
 const getInitialGrid = () => {
   const grid = [];

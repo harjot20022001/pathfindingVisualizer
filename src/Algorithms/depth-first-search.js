@@ -32,6 +32,3 @@ function getUnvisitedNeighbors(node, grid) {
   if (col > 0) neighbors.push(grid[row][col - 1]);
   return neighbors.filter((neighbor) => !neighbor.isVisited);
 }
-//if (it.isWall) continue;
-//if (it.distance === Infinity) return visitedNodesInOrder;
-//if (it === finishNode) return visitedNodesInOrder;
