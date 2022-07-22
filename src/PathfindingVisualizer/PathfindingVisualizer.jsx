@@ -7,6 +7,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { depthFirstSearch } from "../Algorithms/depth-first-search";
 import { simpleStairPattern } from "../MazeAlgo/simpleStairPattern";
 import { simpleMaze } from "../MazeAlgo/simpleMaze";
+import { astar } from "../Algorithms/aStar";
 
 const START_NODE_ROW = 12;
 const START_NODE_COL = 17;
@@ -114,6 +115,15 @@ export default class PathfindingVisualizer extends Component {
     this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 
+  visualizeaStar() {
+    const { grid } = this.state;
+    const startNode = grid[START_NODE_ROW][START_NODE_COL];
+    const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+    const visitedNodesInOrder = astar(grid, startNode, finishNode);
+    console.log(visitedNodesInOrder);
+    this.animateDFS(visitedNodesInOrder);
+  }
+
   visualizeDFS() {
     const { grid } = this.state;
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
@@ -171,8 +181,6 @@ export default class PathfindingVisualizer extends Component {
                 <Button variant="dark" onClick={() => this.visualizeDFS()}>
                   Visualize DFS
                 </Button>
-                &nbsp;
-                <Button variant="dark">Visualize A*</Button>
                 &nbsp; &nbsp;
                 <Dropdown>
                   <Dropdown.Toggle
